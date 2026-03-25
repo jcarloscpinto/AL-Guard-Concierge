@@ -24,7 +24,7 @@ description: "Product management skill for PRDs, product specs, feature specs, u
 - Detailed UI/UX design (collaborate with designers)
 - Sprint estimation (done during refinement, not ticket creation)
 
-## Jira Ticket Template (VisionPlanner Standard)
+## Jira Ticket Template (Standard)
 
 Always use this structure for Jira ticket descriptions:
 

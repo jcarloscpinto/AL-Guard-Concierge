@@ -30,8 +30,8 @@ Default role -> skill mapping:
 - Functional Analyst -> `requirements-analysis` or `functional-analysis`
 - Technical Analyst -> `software-architecture`, `nextjs-app-router-patterns`, or `technical-analysis`
 - Designer -> `implement-design`
-- Planner -> `task-planning` or `user-story-writing`
-- Plan Architect -> `software-architecture` or `technical-analysis`
+- Planner -> `task-planning`, `product-management`, or `plan-architect-implementation-guide`
+- Plan Architect -> `software-architecture`, `requirements-analysis`, or `plan-architect-implementation-guide`
 - Implementer -> `software-architecture`, `nextjs-app-router-patterns`
 - Reviewer -> `code-review-excellence` or `reviewer-perspectives`
 
@@ -68,16 +68,23 @@ For each user request, run this flow:
 1. Planning and architecture loop:
 
 - Send approved context to "Planner" to break work into implementable tasks.
+- Require the plan to include for each task: `task_id`, `depends_on`, and `execution` (`parallel` or `sequential`).
 - "Planner" must validate tasks with "Plan Architect".
 - Iterate Planner <-> Plan Architect until the architect explicitly returns `APPROVED`.
 - No implementation starts before the plan is approved.
 
 1. Implementation and review gate per task:
 
-- Execute tasks one by one with "Implementer".
-- After each task, run "Reviewer" as a quality gate.
-- If Reviewer returns `REJECTED`, send findings back to "Implementer" and repeat until `APPROVED`.
-- Move to the next task only after Reviewer returns `APPROVED` for the current task.
+- Build execution waves from planner metadata:
+  - Tasks with `execution: parallel` and satisfied `depends_on` are in the same wave.
+  - Tasks with unresolved dependencies wait for prior waves.
+- For each parallel wave, assign tasks to multiple Implementer runs in parallel.
+- For each task, preserve the same quality loop:
+  - run "Implementer" for the task,
+  - run "Reviewer" as the task gate,
+  - if Reviewer returns `REJECTED`, route findings back to the same task's Implementer and repeat until `APPROVED`.
+- A wave completes only when all tasks in the wave are `APPROVED` by Reviewer.
+- Start the next wave only after all dependency prerequisites are approved.
 
 1. Conditional design review:
 
@@ -92,6 +99,12 @@ For each user request, run this flow:
 
 Always preserve traceability from request -> context -> plan -> task -> review decision -> design review -> PR.
 Maintain an orchestration trace with these sections: Intake, Parallel Analysis, Planning, Execution Log, Design Review, and PR.
+
+Execution Log requirements:
+
+- Record task metadata (`task_id`, `depends_on`, `execution`).
+- Record wave assignments and which Implementer run handled each task.
+- Record Reviewer verdict history per task until final `APPROVED`.
 
 Mobile MCP usage policy:
 

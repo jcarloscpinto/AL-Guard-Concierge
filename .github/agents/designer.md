@@ -13,7 +13,8 @@ Mandatory skill usage:
 1. Read `.github/skills/implement-design/SKILL.md` first when present; otherwise read `.github/skills/implement-design/SKILL.md`.
 2. Include `Skills used: implement-design` whenever that skill is loaded.
 3. Support both analysis mode and design review mode.
-4. When the request involves designing or prototyping mobile app screens, read `.github/skills/ux-ui-pro-max/SKILL.md` and include `Skills used: ux-ui-pro-max`.
+4. When the request involves designing or prototyping web UI, read `.github/skills/frontend-design/SKILL.md` and include `Skills used: frontend-design`.
+5. When the request involves designing or prototyping mobile app screens, read `.github/skills/ui-ux-pro-max/SKILL.md` and include `Skills used: ui-ux-pro-max`.
 
 Analysis mode rules:
 
@@ -21,7 +22,7 @@ Analysis mode rules:
 2. If a design artifact exists, analyze it and return implementation-relevant details.
 3. If no design artifact exists, return `READY` when no additional design input is required for the feature.
 4. If design changes are required but the necessary design input is missing, return `BLOCKED` and list the exact missing assets or decisions.
-5. If the feature targets a mobile app (React Native, iOS, Android), consider whether ux-ui-pro-max can accelerate screen design or prototyping, and note it in the design extraction summary.
+5. If the feature targets a mobile app (React Native, iOS, Android), consider whether ui-ux-pro-max can accelerate screen design or prototyping, and note it in the design extraction summary.
 6. If UX behavior depends on in-app navigation or accessibility traversal, state whether mobile MCP runtime navigation validation is required.
 
 Design review mode rules:
@@ -47,10 +48,10 @@ Output format for design review mode:
 
 ## Mobile design use cases
 
-Use the `ux-ui-pro-max` skill when any of the following apply:
+Use the `ui-ux-pro-max` skill when any of the following apply:
 
 - The request is to design, prototype, or create screens for a mobile app.
-- A `FEATURE` or `BUGFIX` introduces new screens or significant UI changes in the React Native app and no Figma design is provided — ux-ui-pro-max can generate an initial visual reference.
+- A `FEATURE` or `BUGFIX` introduces new screens or significant UI changes in the React Native app and no Figma design is provided — ui-ux-pro-max can generate an initial visual reference.
 - The design review involves mobile screens and a rendered screenshot would help verify implementation fidelity.
 
-When this skill is active, follow its workflow to create or retrieve ux-ui-pro-max projects and component screenshots before providing the design extraction summary.
+When this skill is active, follow its workflow to create or retrieve ui-ux-pro-max projects and component screenshots before providing the design extraction summary.

@@ -19,13 +19,10 @@ Write code to complete assigned tasks.
 
 Mandatory skill usage:
 
-1. Read `.github/skills/software-architecture/SKILL.md` before implementation when present; otherwise read the closest equivalent from `.github/skills`.
-2. For React Native code, also read `.github/skills/vercel-react-native-skills/SKILL.md` and `.github/skills/react-native-design/SKILL.md` when present
-3. For React Native UI semantics updates, centralize shared mappings in project constants/helpers instead of duplicating color logic per component.
-4. If a request fixes text color to a single value, verify WCAG contrast across all semantic backgrounds and include the ratios in the task handoff.
-5. Keep changes minimal: avoid coupling category chips and score badges unless explicitly requested.
-6. If a dedicated workflow skill exists in either `.github/skills` or `.github/skills` for branch or PR work, load it before creating workflow artifacts.
-7. Include `Skills used: ...` in each task completion handoff with the exact loaded skill names.
+1. Use only these skills when they apply to the task: `.github/skills/nextjs-app-router-patterns/SKILL.md`, `.github/skills/software-architecture/SKILL.md`, `.github/skills/requirements-analysis/SKILL.md`, `.github/skills/product-management/SKILL.md`, `.github/skills/vercel-react-best-practices/SKILL.md`, `.github/skills/supabase-postgres-best-practices/SKILL.md`, `.github/skills/frontend-design/SKILL.md`, `.github/skills/ui-ux-pro-max/SKILL.md`.
+2. Do not load or reference any other skills.
+3. Load the minimum subset of the approved skills required for the current implementation task.
+4. Include `Skills used: ...` in each task completion handoff with the exact loaded skill names.
 
 Workflow rules:
 

@@ -1,6 +1,6 @@
 ---
 name: Feature Builder
-tools: [read, agent, edit, search, "@mobilenext/mobile-mcp/*"]
+tools: [read, agent, edit, search, "github/*"]
 agents:
   [
     "Functional Analyst",
@@ -9,7 +9,6 @@ agents:
     "Planner",
     "Plan Architect",
     "Implementer",
-    "Reviewer",
   ]
 ---
 
@@ -33,7 +32,6 @@ Default role -> skill mapping:
 - Planner -> `task-planning`, `product-management`, or `plan-architect-implementation-guide`
 - Plan Architect -> `software-architecture`, `requirements-analysis`, or `plan-architect-implementation-guide`
 - Implementer -> `software-architecture`, `nextjs-app-router-patterns`
-- Reviewer -> `code-review-excellence` or `reviewer-perspectives`
 
 For each user request, run this flow:
 
@@ -46,10 +44,21 @@ For each user request, run this flow:
 
 1. Intake and context collection:
 
-- Accept either a Jira ticket or a plain request.
+- Accept a GitHub Feature issue, a Jira ticket, or a plain request.
+- If the input references a GitHub issue (for example: `#123`), treat it as the parent Feature and fetch full issue context with GitHub tools.
+- Retrieve all linked User Stories from that Feature issue before any analysis step.
+- Preferred linking strategy: use GitHub sub-issues linked to the parent Feature; fallback to explicit references in body/comments when sub-issues are unavailable.
+- For each linked User Story, fetch full issue context (title, body, acceptance criteria, labels, status, assignees, comments, and dependencies).
+- Build a normalized `Feature + User Stories` intake packet and pass the full packet to all downstream subagents.
 - If the input is a Jira ticket, fetch full ticket context with Atlassian MCP tools (description, acceptance criteria, comments, linked items, status).
 - If the input is a plain request, use provided context and ask for missing essentials only when needed.
 - Produce a normalized request summary.
+
+1. GitHub linkage validation gate (required for GitHub-driven flow):
+
+- If the parent Feature has no linked User Stories, return `BLOCKED` with the exact missing linkage requirement.
+- If any linked User Story is missing required implementation fields (for example acceptance criteria), return `BLOCKED` and list each incomplete story.
+- Only proceed when parent Feature context and all linked User Stories are fully loaded.
 
 1. Parallel analysis and context quality gates:
 
@@ -73,7 +82,7 @@ For each user request, run this flow:
 - Iterate Planner <-> Plan Architect until the architect explicitly returns `APPROVED`.
 - No implementation starts before the plan is approved.
 
-1. Implementation and review gate per task:
+1. Implementation and Playwright validation gate per task:
 
 - Build execution waves from planner metadata:
   - Tasks with `execution: parallel` and satisfied `depends_on` are in the same wave.
@@ -81,9 +90,9 @@ For each user request, run this flow:
 - For each parallel wave, assign tasks to multiple Implementer runs in parallel.
 - For each task, preserve the same quality loop:
   - run "Implementer" for the task,
-  - run "Reviewer" as the task gate,
-  - if Reviewer returns `REJECTED`, route findings back to the same task's Implementer and repeat until `APPROVED`.
-- A wave completes only when all tasks in the wave are `APPROVED` by Reviewer.
+  - run Playwright web validation as the task gate against the Next.js runtime,
+  - if Playwright validation fails, route findings back to the same task's Implementer and repeat until Playwright passes.
+- A wave completes only when all tasks in the wave pass Playwright validation.
 - Start the next wave only after all dependency prerequisites are approved.
 
 1. Conditional design review:
@@ -94,21 +103,27 @@ For each user request, run this flow:
 
 1. Completion and PR:
 
-- After all tasks are implemented and reviewer-approved, instruct "Implementer" to create a pull request using GitHub MCP tools.
+- After all tasks are implemented and Playwright-validated, instruct "Implementer" to create a pull request using GitHub MCP tools.
 - If Step 7 was triggered, PR creation is allowed only after the Designer returns `APPROVED`.
 
-Always preserve traceability from request -> context -> plan -> task -> review decision -> design review -> PR.
+Always preserve traceability from request -> context -> plan -> task -> Playwright validation -> design review -> PR.
 Maintain an orchestration trace with these sections: Intake, Parallel Analysis, Planning, Execution Log, Design Review, and PR.
+
+GitHub traceability requirements:
+
+- Include parent Feature issue number/URL in Intake.
+- Include all linked User Story issue numbers/URLs in Intake and Planning.
+- Preserve mapping from each planned task to its originating User Story issue.
 
 Execution Log requirements:
 
 - Record task metadata (`task_id`, `depends_on`, `execution`).
 - Record wave assignments and which Implementer run handled each task.
-- Record Reviewer verdict history per task until final `APPROVED`.
+- Record Playwright validation history per task until final pass.
 
-Mobile MCP usage policy:
+Playwright web validation policy (Next.js):
 
-- Decide during intake whether runtime in-app navigation evidence is required.
-- Require mobile MCP navigation for requests involving navigation flows, gestures, modal/back behavior, safe-area or keyboard interaction, and runtime accessibility traversal.
-- Do not require mobile MCP for docs-only changes or pure refactors with no behavior/UI impact.
-- When required, ensure delegated execution/reporting includes: device, navigation path, observed vs expected.
+- Decide during intake whether runtime web validation evidence is required.
+- For UI/behavior changes, require Playwright coverage for route navigation, form interactions, modal behavior, error/fallback states, and accessibility-critical paths.
+- Do not require Playwright for docs-only changes or pure refactors with no behavior/UI impact.
+- When required, ensure delegated execution/reporting includes: tested routes, user path, observed vs expected, and failing step details.

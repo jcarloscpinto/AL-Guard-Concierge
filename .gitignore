@@ -7,3 +7,7 @@ node_modules
 .env.local
 playwright-report
 test-results
+*.tsbuildinfo
+
+# Local/generated lint artifacts
+.eslintrc.json

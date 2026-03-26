@@ -8,11 +8,11 @@ import {
 import { getOnboardingProperty } from "@/lib/onboarding";
 
 type ParamsContext = {
-  params: { propertyId: string } | Promise<{ propertyId: string }>;
+  params: Promise<{ propertyId: string }>;
 };
 
 export async function GET(request: Request, context: ParamsContext) {
-  const { propertyId } = await Promise.resolve(context.params);
+  const { propertyId } = await context.params;
   const property = getOnboardingProperty(propertyId);
 
   const parsedClaims = parseAccessJwtClaims(

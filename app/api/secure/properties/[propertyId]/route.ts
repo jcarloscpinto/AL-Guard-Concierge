@@ -41,9 +41,9 @@ function buildDeniedResponse(input: {
 
 export async function GET(
   request: Request,
-  context: { params: { propertyId: string } | Promise<{ propertyId: string }> },
+  context: { params: Promise<{ propertyId: string }> },
 ) {
-  const params = await Promise.resolve(context.params);
+  const params = await context.params;
   const propertyId = params.propertyId;
   const url = new URL(request.url);
   const tenantId = url.searchParams.get("tenant_id")?.trim() ?? "";

@@ -29,7 +29,9 @@ test("allows secure property view when scope is valid", async ({ page }) => {
   await expect(page.getByText("property.read")).toBeVisible();
 });
 
-test("shows forbidden guidance when property scope is invalid", async ({ page }) => {
+test("shows forbidden guidance when property scope is invalid", async ({
+  page,
+}) => {
   await page.goto(
     "/secure/properties/property-a?tenant_id=tenant-a&user_id=user-1&role=client&claims_tenant_id=tenant-a&property_scope=property-z",
   );

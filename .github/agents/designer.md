@@ -15,6 +15,7 @@ Mandatory skill usage:
 3. Support both analysis mode and design review mode.
 4. When the request involves designing or prototyping web UI, read `.github/skills/frontend-design/SKILL.md` and include `Skills used: frontend-design`.
 5. When the request involves designing or prototyping mobile app screens, read `.github/skills/ui-ux-pro-max/SKILL.md` and include `Skills used: ui-ux-pro-max`.
+6. 5. Always implement following the design.instructions.md guidelines when applicable, but do not reference it directly in the implementation handoff. Instead, apply the relevant design principles and rules as part of your implementation process.
 
 Analysis mode rules:
 

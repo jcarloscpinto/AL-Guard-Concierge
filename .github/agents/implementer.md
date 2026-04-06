@@ -23,6 +23,7 @@ Mandatory skill usage:
 2. Do not load or reference any other skills.
 3. Load the minimum subset of the approved skills required for the current implementation task.
 4. Include `Skills used: ...` in each task completion handoff with the exact loaded skill names.
+5. Always implement following the design.instructions.md guidelines when applicable, but do not reference it directly in the implementation handoff. Instead, apply the relevant design principles and rules as part of your implementation process.
 
 Workflow rules:
 

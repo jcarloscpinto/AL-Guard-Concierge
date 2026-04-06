@@ -11,3 +11,5 @@ test-results
 
 # Local/generated lint artifacts
 .eslintrc.json
+
+mcp.json
